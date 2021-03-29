@@ -1,0 +1,161 @@
+import java_cup.runtime.*;
+
+parser code  {:
+  public void report_error(String message, Object info) {
+    StringBuilder m = new StringBuilder("Error ");
+
+    if (info instanceof java_cup.runtime.Symbol)
+      m.append( "("+info.toString()+")" );
+
+    m.append(" : "+message);
+
+    System.out.println(m);
+  }
+
+  public void report_fatal_error(String message, Object info) {
+    report_error(message, info);
+    throw new RuntimeException("Fatal Syntax Error");
+  }
+:};
+
+terminal AUTO, STATIC, EXTERN, CONST; // especificador
+terminal VOID, CHAR, FLOAT, DOUBLE, SIGNED, UNSIGNED; // tipo
+terminal SHORT, INT, LONG; // inteiro
+terminal IF, ELSE; // condicao
+terminal RETURN, PRINTF, SCANF, BREAK; // instrucoes
+terminal STRUCT, ENUM; // estrutura
+terminal MAIOR, MENOR, IGUALIGUAL, MENORIGUAL, MAIORIGUAL, DIFERENTE; // comparador
+terminal IGUAL, MULTIPLICADORIGUAL, DIVISORIGUAL, MODIGUAL, MAISIGUAL, MENOSIGUAL; //atribuicao
+terminal MAIS, MENOS, MULTIPLICADOR, DIVISOR; // operadores
+terminal AND; // expressão &&
+terminal OR; // expressão ||
+terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK, PONTOVIRGULA, VIRGULA, ASPAS; //pontuacao
+terminal PONTO; // ponto
+terminal FOR, WHILE; // repeticao
+terminal DEFINE;
+
+terminal NUM;
+terminal LITERAL;
+terminal CRLF;
+terminal ID;
+
+non terminal programa, especificador, tipo, inteiro, programa2, listaID, listaIDTail;
+non terminal listaParametros, listaParamRestante, declaracaoParam, declaracaoParam2;
+non terminal declParamRestante, bloco, conjuntoInst, instrucoes, instrucoesIf, expressao;
+non terminal atribuicao, operadorAtrib, expr, exprList, exprListTail, exprOr, exprAnd;
+non terminal exprAnd2, exprEqual, exprEqual2, exprRelational, exprRelational2;
+non terminal exprPlus, exprPlus2, exprMult, exprMult2, exprUnary, exprParenthesis;
+non terminal primary, primaryID;
+
+non terminal goal;
+
+start with goal;
+
+goal ::= VOID
+        ;
+
+programa ::= especificador tipo ID programa2
+            | DEFINE ID NUM CRLF programa
+            |
+            ;
+
+especificador ::= AUTO | STATIC | EXTERN | CONST | ;
+
+tipo ::= VOID | CHAR | FLOAT | DOUBLE | SIGNED inteiro | UNSIGNED inteiro | inteiro;
+
+inteiro ::= SHORT | INT | LONG;
+
+programa2 ::= PONTOVIRGULA programa
+            | LBRACK NUM RBRACK PONTOVIRGULA programa
+            | LPAREN listaParametros RPAREN bloco programa
+            | VIRGULA listaID programa;
+
+listaID ::= ID declaracaoParam2 listaIDTail;
+
+listaIDTail ::= PONTOVIRGULA | VIRGULA listaID;
+
+listaParametros ::= listaParamRestante | ;
+
+listaParamRestante ::= declaracaoParam declParamRestante;
+
+declaracaoParam ::= tipo ID declaracaoParam2;
+
+declaracaoParam2 ::= LBRACK NUM RBRACK | ;
+
+declParamRestante ::= VIRGULA listaParamRestante | ;
+
+bloco ::= LBRACE conjuntoInst RBRACE | PONTOVIRGULA conjuntoInst;
+
+conjuntoInst ::= programa conjuntoInst | instrucoes conjuntoInst | ;
+
+instrucoes ::= ID expressao PONTOVIRGULA
+            | RETURN expr PONTOVIRGULA
+            | PRINTF LPAREN expr RPAREN PONTOVIRGULA
+            | SCANF LPAREN ID RPAREN PONTOVIRGULA
+            | BREAK PONTOVIRGULA
+            | IF LPAREN expr RPAREN instrucoes instrucoesIf;
+
+instrucoesIf ::= ELSE instrucoes | ;
+
+expressao ::= atribuicao
+            | LBRACK expr RBRACK atribuicao
+            | LPAREN exprList RPAREN
+            | ;
+
+atribuicao ::= operadorAtrib expr;
+
+operadorAtrib ::= IGUAL | MULTIPLICADORIGUAL | DIVISORIGUAL | MODIGUAL | MAISIGUAL | MENOSIGUAL;
+
+expr ::= exprAnd exprOr;
+
+exprList ::= expr exprListTail | ;
+
+exprListTail ::= VIRGULA exprList | ;
+
+exprOr ::= OR exprAnd exprOr | ;
+
+exprAnd ::= exprEqual exprAnd2;
+
+exprAnd2 ::= AND exprEqual exprAnd2 | ;
+
+exprEqual ::= exprRelational exprEqual2;
+
+exprEqual2 ::= IGUALIGUAL exprRelational exprEqual2 | DIFERENTE exprRelational exprEqual2 | ;
+
+exprRelational ::= exprPlus exprRelational2;
+
+exprRelational2 ::= MENOR exprPlus exprRelational2
+                | MENORIGUAL exprPlus exprRelational2
+                | MAIOR exprPlus exprRelational2
+                | MAIORIGUAL exprPlus exprRelational2
+                | ;
+
+exprPlus ::= exprMult exprPlus2;
+
+exprPlus2 ::= MAIS exprMult exprPlus2
+            | MENOS exprMult exprPlus2
+            | ;
+
+exprMult ::= exprUnary exprMult2;
+
+exprMult2 ::= MULTIPLICADOR exprUnary exprMult2
+            | DIVISOR exprUnary exprMult2
+            | ;
+
+exprUnary ::= MAIS exprParenthesis
+            | MENOS exprParenthesis
+            | exprParenthesis;
+
+exprParenthesis ::= LPAREN expr RPAREN | primary;
+
+primary ::= ID primaryID | NUM | LITERAL;
+
+primaryID ::= LBRACK primary RBRACK | LPAREN exprList RPAREN | ;
+
+// NUM declarado no flex
+
+// ID declarado no flex
+
+// LITERAL declarado no flex
+
+// CRLF declarado no flex

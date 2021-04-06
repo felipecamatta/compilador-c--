@@ -11,9 +11,9 @@ import java.nio.file.Paths;
 
 public class Analisador {
 
-    public void executar() {
+    public TabelaDeSimbolo executar(String arquivo) {
         try {
-            String path = Paths.get("").toAbsolutePath().toString() + "\\src\\dados\\teste.txt";
+            String path = arquivo; //Paths.get("").toAbsolutePath().toString() + "\\src\\dados\\teste.txt"
 
             Lexer lexer = new Lexer( new FileReader(path));
 
@@ -25,13 +25,14 @@ public class Analisador {
                 tabela.add(new Token(s.sym, ""));
             } while (s.sym != sym.EOF);
 
-            System.out.println(tabela);
-
+            //System.out.println(tabela);
+            return tabela;
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        return null;
     }
 
 }

@@ -47,7 +47,7 @@ dig = [0-9]+ \. [0-9]*
 string = [^\r\n\"\\]
 
 /* Identificador */
-Identificador = [A-Za-z_][A-Za-z_0-9]{30}
+Identificador = [A-Za-z_][A-Za-z_0-9]*
 
 %%
 

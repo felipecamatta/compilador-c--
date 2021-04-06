@@ -14,6 +14,7 @@ import model.TabelaDeSimbolo;
 import model.Token;
 import ufes.Analisador;
 import views.ViewPrincipal;
+import views.ViewPrincipal;
 
 public class PresenterViewPrincipal {
 
@@ -63,7 +64,7 @@ public class PresenterViewPrincipal {
                                 ex.printStackTrace();
                             }
                         }
-                        view.getJtCodigo().setText(texto);
+                        view.getTaCodigo().setText(texto);
 
                     } else {
                         JOptionPane.showMessageDialog(view, "Erro! Arquivo precisa ter extens�o .C");
@@ -79,7 +80,7 @@ public class PresenterViewPrincipal {
                 PrintWriter pw;
                 try {
                     pw = new PrintWriter(arquivo);
-                    pw.print(view.getJtCodigo().getText());
+                    pw.print(view.getTaCodigo().getText());
                     pw.close();
                 } catch (FileNotFoundException fileNotFoundException) {
                     fileNotFoundException.printStackTrace();
@@ -100,7 +101,7 @@ public class PresenterViewPrincipal {
             tmSimbolos.addRow(new Object[]{token.getNome(), token.getValor()});
         }
 
-        this.view.getjTableSaida().setModel(tmSimbolos);
+        this.view.getTbSimbolos().setModel(tmSimbolos);
     }
 
 }

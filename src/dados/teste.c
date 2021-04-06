@@ -1,5 +1,6 @@
 main() {
     int a1 = 2;
+    dadada;
     int b2 = 2;
     int c3 = 2;
 

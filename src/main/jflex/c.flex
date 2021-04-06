@@ -101,6 +101,18 @@ Identificador = [A-Za-z_][A-Za-z_0-9]*
     "/="            { return symbol(sym.DIVISORIGUAL); }
     "%="            { return symbol(sym.MODIGUAL); }
 
+    /* Separadores e Pontuação */
+    "("             { return symbol(sym.LPAREN); }
+    ")"             { return symbol(sym.RPAREN); }
+    "{"             { return symbol(sym.LBRACE); }
+    "}"             { return symbol(sym.RBRACE); }
+    "["             { return symbol(sym.LBRACK); }
+    "]"             { return symbol(sym.RBRACK); }
+    ";"             { return symbol(sym.PONTOVIRGULA); }
+    ","             { return symbol(sym.VIRGULA); }
+    "."             { return symbol(sym.PONTO); }
+    "'"             { return symbol(sym.ASPAS); }
+
     /* Comentario e espaco em branco */
     {Comentario}    { /* ignorar */ }
     {EspacoBranco}  { /* ignorar */ }
@@ -116,18 +128,6 @@ Identificador = [A-Za-z_][A-Za-z_0-9]*
 
     /* Fim e quebra de linha */
     {FimLinha}      { return symbol(sym.CRLF); }
-
-    /* Separadores e Pontuação */
-    "("             { return symbol(sym.LPAREN); }
-    ")"             { return symbol(sym.RPAREN); }
-    "{"             { return symbol(sym.LBRACE); }
-    "}"             { return symbol(sym.RBRACE); }
-    "["             { return symbol(sym.LBRACK); }
-    "]"             { return symbol(sym.RBRACK); }
-    ";"             { return symbol(sym.PONTOVIRGULA); }
-    ","             { return symbol(sym.VIRGULA); }
-    "."             { return symbol(sym.PONTO); }
-    "'"             { return symbol(sym.ASPAS); }
 
 }
 

@@ -22,7 +22,7 @@ public class Analisador {
             Symbol s;
             do {
                 s = lexer.next_token();
-                tabela.add(new Token(s.sym, ""));
+                tabela.add(new Token(s.sym, lexer.yytext()));
             } while (s.sym != sym.EOF);
 
             System.out.println(tabela);

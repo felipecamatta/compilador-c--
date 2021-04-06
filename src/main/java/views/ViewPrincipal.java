@@ -22,6 +22,8 @@ public class ViewPrincipal extends javax.swing.JFrame {
         tfCaminho = new javax.swing.JTextField();
         btnSelecionar = new javax.swing.JButton();
         btnAnalisar = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        taMensagem = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("IDE C--");
@@ -66,23 +68,28 @@ public class ViewPrincipal extends javax.swing.JFrame {
 
         btnAnalisar.setText("Analisar");
 
+        taMensagem.setColumns(20);
+        taMensagem.setRows(5);
+        jScrollPane3.setViewportView(taMensagem);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(tfCaminho, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnSelecionar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
-                        .addComponent(btnAnalisar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnAnalisar)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -90,8 +97,10 @@ public class ViewPrincipal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfCaminho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -100,7 +109,7 @@ public class ViewPrincipal extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        setSize(new java.awt.Dimension(816, 690));
+        setSize(new java.awt.Dimension(816, 573));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -116,6 +125,10 @@ public class ViewPrincipal extends javax.swing.JFrame {
         return taCodigo;
     }
 
+    public JTextArea getTaMensagem() {
+        return taMensagem;
+    }
+
     public JTable getTbSimbolos() {
         return tbSimbolos;
     }
@@ -129,7 +142,9 @@ public class ViewPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnSelecionar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea taCodigo;
+    private javax.swing.JTextArea taMensagem;
     private javax.swing.JTable tbSimbolos;
     private javax.swing.JTextField tfCaminho;
     // End of variables declaration//GEN-END:variables

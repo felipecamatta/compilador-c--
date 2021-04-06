@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ListIterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
@@ -86,8 +88,16 @@ public class PresenterViewPrincipal {
                     fileNotFoundException.printStackTrace();
                 }
                 Analisador analisador = new Analisador();
-                TabelaDeSimbolo tabela = analisador.executar(arquivo);
-                preencheTabela(tabela);
+                TabelaDeSimbolo tabela;
+                try {
+                    tabela = analisador.executar(arquivo);
+                    preencheTabela(tabela);
+                    view.getTaMensagem().setText("Análise Léxica Concluida!");
+                } catch (RuntimeException ex) {
+                    view.getTaMensagem().setText(ex.getMessage());
+                } catch (IOException ex) {
+                    view.getTaMensagem().setText("Erro ao ler arquivo");
+                }                
             }
         });
     }

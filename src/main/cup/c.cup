@@ -29,7 +29,7 @@ terminal IGUAL, MULTIPLICADORIGUAL, DIVISORIGUAL, MODIGUAL, MAISIGUAL, MENOSIGUA
 terminal MAIS, MENOS, MULTIPLICADOR, DIVISOR; // operadores
 terminal AND; // expressão &&
 terminal OR; // expressão ||
-terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK, PONTOVIRGULA, VIRGULA, ASPAS; //pontuacao
+terminal PARENTESE_E, PARENTESE_D, COLCHETE_E, COLCHETE_D, CHAVE_E, CHAVE_D, PONTOVIRGULA, VIRGULA, ASPA_SIMPLES, ASPA_DUPLA; //pontuacao
 terminal PONTO; // ponto
 terminal FOR, WHILE; // repeticao
 terminal DEFINE;
@@ -66,8 +66,8 @@ tipo ::= VOID | CHAR | FLOAT | DOUBLE | SIGNED inteiro | UNSIGNED inteiro | inte
 inteiro ::= SHORT | INT | LONG;
 
 programa2 ::= PONTOVIRGULA programa
-            | LBRACK NUM RBRACK PONTOVIRGULA programa
-            | LPAREN listaParametros RPAREN bloco programa
+            | COLCHETE_E NUM COLCHETE_D PONTOVIRGULA programa
+            | PARENTESE_E listaParametros PARENTESE_D bloco programa
             | VIRGULA listaID programa;
 
 listaID ::= ID declaracaoParam2 listaIDTail;
@@ -80,26 +80,26 @@ listaParamRestante ::= declaracaoParam declParamRestante;
 
 declaracaoParam ::= tipo ID declaracaoParam2;
 
-declaracaoParam2 ::= LBRACK NUM RBRACK | ;
+declaracaoParam2 ::= COLCHETE_E NUM COLCHETE_D | ;
 
 declParamRestante ::= VIRGULA listaParamRestante | ;
 
-bloco ::= LBRACE conjuntoInst RBRACE | PONTOVIRGULA conjuntoInst;
+bloco ::= CHAVE_E conjuntoInst CHAVE_D | PONTOVIRGULA conjuntoInst;
 
 conjuntoInst ::= programa conjuntoInst | instrucoes conjuntoInst | ;
 
 instrucoes ::= ID expressao PONTOVIRGULA
             | RETURN expr PONTOVIRGULA
-            | PRINTF LPAREN expr RPAREN PONTOVIRGULA
-            | SCANF LPAREN ID RPAREN PONTOVIRGULA
+            | PRINTF PARENTESE_E expr PARENTESE_D PONTOVIRGULA
+            | SCANF PARENTESE_E ID PARENTESE_D PONTOVIRGULA
             | BREAK PONTOVIRGULA
-            | IF LPAREN expr RPAREN instrucoes instrucoesIf;
+            | IF PARENTESE_E expr PARENTESE_D instrucoes instrucoesIf;
 
 instrucoesIf ::= ELSE instrucoes | ;
 
 expressao ::= atribuicao
-            | LBRACK expr RBRACK atribuicao
-            | LPAREN exprList RPAREN
+            | COLCHETE_E expr COLCHETE_D atribuicao
+            | PARENTESE_E exprList PARENTESE_D
             | ;
 
 atribuicao ::= operadorAtrib expr;
@@ -146,11 +146,11 @@ exprUnary ::= MAIS exprParenthesis
             | MENOS exprParenthesis
             | exprParenthesis;
 
-exprParenthesis ::= LPAREN expr RPAREN | primary;
+exprParenthesis ::= PARENTESE_E expr PARENTESE_D | primary;
 
 primary ::= ID primaryID | NUM | LITERAL;
 
-primaryID ::= LBRACK primary RBRACK | LPAREN exprList RPAREN | ;
+primaryID ::= COLCHETE_E primary COLCHETE_D | PARENTESE_E exprList PARENTESE_D | ;
 
 // NUM declarado no flex
 

@@ -101,16 +101,17 @@ Identificador = [A-Za-z_][A-Za-z_0-9]*
     "%="            { return symbol(sym.MODIGUAL); }
 
     /* Separadores e Pontuação */
-    "("             { return symbol(sym.LPAREN); }
-    ")"             { return symbol(sym.RPAREN); }
-    "{"             { return symbol(sym.LBRACE); }
-    "}"             { return symbol(sym.RBRACE); }
-    "["             { return symbol(sym.LBRACK); }
-    "]"             { return symbol(sym.RBRACK); }
+    "("             { return symbol(sym.PARENTESE_E); }
+    ")"             { return symbol(sym.PARENTESE_D); }
+    "{"             { return symbol(sym.CHAVE_E); }
+    "}"             { return symbol(sym.CHAVE_D); }
+    "["             { return symbol(sym.COLCHETE_E); }
+    "]"             { return symbol(sym.COLCHETE_D); }
     ";"             { return symbol(sym.PONTOVIRGULA); }
     ","             { return symbol(sym.VIRGULA); }
     "."             { return symbol(sym.PONTO); }
-    "'"             { return symbol(sym.ASPAS); }
+    "'"             { return symbol(sym.ASPA_SIMPLES); }
+    "\""             { return symbol(sym.ASPA_DUPLA); }
 
     /* Comentario e espaco em branco */
     {Comentario}    { /* ignorar */ }
@@ -131,6 +132,6 @@ Identificador = [A-Za-z_][A-Za-z_0-9]*
 }
 
 /* Erro */
-[^]                 { throw new RuntimeException("Illegal character \""+yytext()+
-                                                    "\" at line "+yyline+", column "+yycolumn); }
+[^]                 { throw new RuntimeException("Illegal character \" "+yytext()+
+                                                    " \" at line "+yyline+1+", column "+yycolumn); }
 <<EOF>>             { return symbol(sym.EOF); }

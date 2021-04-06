@@ -7,6 +7,7 @@ main() {
     int resultado = a1 + b2 + c3;
 
     fi(a1 > a2) {
-        printf(a1);
+        printf(a1");
     }
+    printf('ção');
 }

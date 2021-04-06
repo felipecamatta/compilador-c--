@@ -2,33 +2,34 @@ package presenter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.ListIterator;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+
+import model.TabelaDeSimbolo;
+import model.Token;
 import ufes.Analisador;
 import views.ViewPrincipal;
 
-/**
- *
- * @author Alcebiades
- */
 public class PresenterViewPrincipal {
 
-    private ViewPrincipal vp;
+    private ViewPrincipal view;
+    private DefaultTableModel tmSimbolos;
 
     public PresenterViewPrincipal() {
-        vp = new ViewPrincipal();
-        vp.setVisible(true);
-        selecionarArquivo();
-        analisar();
-    }
+        view = new ViewPrincipal();
+        view.setVisible(true);
 
-    public void selecionarArquivo() {
-        this.vp.getBtnSelecionar().addActionListener(new ActionListener() {
+        tmSimbolos = new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Token", "Lexema"}
+        );
+
+        this.view.getBtnSelecionar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileopen = new JFileChooser();
@@ -40,7 +41,7 @@ public class PresenterViewPrincipal {
                 if (ret == JFileChooser.APPROVE_OPTION) {
                     File file = fileopen.getSelectedFile();
                     if (file.toString().contains(".c")) {
-                        vp.getTfCaminho().setText(file.toString());
+                        view.getTfCaminho().setText(file.toString());
 
                         FileInputStream fis = null;
                         String texto = "";
@@ -62,27 +63,44 @@ public class PresenterViewPrincipal {
                                 ex.printStackTrace();
                             }
                         }
-                        vp.getJtCodigo().setText(texto);
+                        view.getJtCodigo().setText(texto);
 
                     } else {
-                        JOptionPane.showMessageDialog(vp, "Erro! Arquivo precisa ter extensão .C");
+                        JOptionPane.showMessageDialog(view, "Erro! Arquivo precisa ter extensï¿½o .C");
                     }
                 }
             }
-
         });
 
-    }
-
-    public void analisar() {
-        this.vp.getBtnAnalisar().addActionListener(new ActionListener() {
+        this.view.getBtnAnalisar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                File arquivo = new File(view.getTfCaminho().getText());
+                PrintWriter pw;
+                try {
+                    pw = new PrintWriter(arquivo);
+                    pw.print(view.getJtCodigo().getText());
+                    pw.close();
+                } catch (FileNotFoundException fileNotFoundException) {
+                    fileNotFoundException.printStackTrace();
+                }
                 Analisador analisador = new Analisador();
-                String tabela = analisador.executar(vp.getTfCaminho().getText()).toString();
-                System.out.println(tabela);
-//vp.getjTableSaida()
+                TabelaDeSimbolo tabela = analisador.executar(arquivo);
+                preencheTabela(tabela);
             }
         });
     }
+
+    private void preencheTabela(TabelaDeSimbolo tabela) {
+        tmSimbolos.setNumRows(0);
+        ListIterator<Token> it = tabela.getTokens().listIterator();
+
+        while (it.hasNext()) {
+            Token token = it.next();
+            tmSimbolos.addRow(new Object[]{token.getNome(), token.getValor()});
+        }
+
+        this.view.getjTableSaida().setModel(tmSimbolos);
+    }
+
 }

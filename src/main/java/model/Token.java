@@ -1,4 +1,4 @@
-package ufes;
+package model;
 
 import cup.sym;
 

@@ -1,7 +1,7 @@
 main() {
-    int a1 = 0;
-    int b2 = 1;
-    int c3 = 4;
+    int a1 = 2;
+    int b2 = 2;
+    int c3 = 2;
 
     int resultado = a1 + b2 + c3;
 

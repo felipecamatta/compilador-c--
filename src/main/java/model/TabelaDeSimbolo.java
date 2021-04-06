@@ -1,13 +1,17 @@
-package ufes;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TabelaDeSimbolo {
 
-    List<Token> tokens = new ArrayList<>();
+    private List<Token> tokens = new ArrayList<>();
 
     public TabelaDeSimbolo() {
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
     }
 
     public void add(Token token) {

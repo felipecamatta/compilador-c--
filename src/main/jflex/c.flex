@@ -11,7 +11,6 @@ import cup.sym;
 %implements sym
 
 %unicode
-%ignorecase
 
 %line
 %column
@@ -48,7 +47,7 @@ dig = [0-9]+ \. [0-9]*
 string = [^\r\n\"\\]
 
 /* Identificador */
-Identificador = [A-Za-z_][A-Za-z_0-9]*
+Identificador = [A-Za-z_][A-Za-z_0-9]{30}
 
 %%
 

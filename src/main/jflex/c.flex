@@ -41,13 +41,17 @@ ComentarioBloco = "/*" [^*] ~"*/"
 ComentarioLinha = "//" {InputCaracter}* {FimLinha}?
 
 /* Números */
-dig = [0-9]+ \. [0-9]*
+dig = [0] | [1-9][0-9]*
 
 /* Caracter */
-string = [^\r\n\"\\]
+StringCharacter = [^\r\n\"\\]
+SingleCharacter = [^\r\n\'\\]
 
 /* Identificador */
 Identificador = [A-Za-z_][A-Za-z_0-9]*
+
+
+%state STRING
 
 %%
 
@@ -74,11 +78,11 @@ Identificador = [A-Za-z_][A-Za-z_0-9]*
     "signed"        { return symbol(sym.SIGNED); }
     "static"        { return symbol(sym.STATIC); }
     "struct"        { return symbol(sym.STRUCT); }
-    /* "typedef"    { return symbol(sym.TYPEDEF); } */
     "unsigned"      { return symbol(sym.UNSIGNED); }
     "void"          { return symbol(sym.VOID); }
     "while"         { return symbol(sym.WHILE); }
     "#define"       { return symbol(sym.DEFINE); }
+    "#include"      { return symbol(sym.INCLUDE); }
 
     /* Operadores */
     ">"             { return symbol(sym.MAIOR); }
@@ -111,7 +115,10 @@ Identificador = [A-Za-z_][A-Za-z_0-9]*
     ","             { return symbol(sym.VIRGULA); }
     "."             { return symbol(sym.PONTO); }
     "'"             { return symbol(sym.ASPA_SIMPLES); }
-    "\""             { return symbol(sym.ASPA_DUPLA); }
+    "\""            { return symbol(sym.ASPA_DUPLA); }
+
+    /* character literal */
+    \'              { yybegin(STRING); string.setLength(0); }
 
     /* Comentario e espaco em branco */
     {Comentario}    { /* ignorar */ }
@@ -121,17 +128,24 @@ Identificador = [A-Za-z_][A-Za-z_0-9]*
     {Identificador} { return symbol(sym.ID, yytext()); }
 
     /* Constantes, números e cadeias de literais */
-    {dig}           { return symbol(sym.NUM, Integer.valueOf(yytext())); }
-
-    /* Literal */
-    {string}      { return symbol(sym.LITERAL); }
+    {dig}           { return symbol(sym.NUM); }
 
     /* Fim e quebra de linha */
     {FimLinha}      { return symbol(sym.CRLF); }
 
 }
 
+<STRING> {
+  \'                             { yybegin(YYINITIAL); return symbol(LITERAL, string.toString()); }
+
+  {StringCharacter}+             { string.append( yytext() ); }
+
+  /* error cases */
+  \\.                            { throw new RuntimeException("Sequência ilegal \""+yytext()+"\""); }
+  {FimLinha}               { throw new RuntimeException("String não terminada no fim da linha"); }
+}
+
 /* Erro */
-[^]                 { throw new RuntimeException("Illegal character \" "+yytext()+
-                                                    " \" at line "+yyline+1+", column "+yycolumn); }
+[^]                 { throw new RuntimeException("Caracter ilegal \" "+yytext()+
+                                                    " \" na linha "+yyline+1+", coluna "+yycolumn); }
 <<EOF>>             { return symbol(sym.EOF); }

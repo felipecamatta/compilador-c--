@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ListIterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
@@ -15,7 +13,6 @@ import javax.swing.table.DefaultTableModel;
 import model.TabelaDeSimbolo;
 import model.Token;
 import ufes.Analisador;
-import views.ViewPrincipal;
 import views.ViewPrincipal;
 
 public class PresenterViewPrincipal {
@@ -69,35 +66,34 @@ public class PresenterViewPrincipal {
                         view.getTaCodigo().setText(texto);
 
                     } else {
-                        JOptionPane.showMessageDialog(view, "Erro! Arquivo precisa ter extens�o .C");
+                        JOptionPane.showMessageDialog(view, "Erro! Arquivo precisa ter extensão .C");
                     }
                 }
             }
         });
 
-        this.view.getBtnAnalisar().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                File arquivo = new File(view.getTfCaminho().getText());
-                PrintWriter pw;
-                try {
-                    pw = new PrintWriter(arquivo);
-                    pw.print(view.getTaCodigo().getText());
-                    pw.close();
-                } catch (FileNotFoundException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
-                }
-                Analisador analisador = new Analisador();
-                TabelaDeSimbolo tabela;
-                try {
-                    tabela = analisador.executar(arquivo);
-                    preencheTabela(tabela);
-                    view.getTaMensagem().setText("Análise Léxica Concluida!");
-                } catch (RuntimeException ex) {
-                    view.getTaMensagem().setText(ex.getMessage());
-                } catch (IOException ex) {
-                    view.getTaMensagem().setText("Erro ao ler arquivo");
-                }                
+        this.view.getBtnAnalisar().addActionListener(e -> {
+            File arquivo = new File(view.getTfCaminho().getText());
+            PrintWriter pw;
+            try {
+                pw = new PrintWriter(arquivo);
+                pw.print(view.getTaCodigo().getText());
+                pw.close();
+            } catch (FileNotFoundException fileNotFoundException) {
+                fileNotFoundException.printStackTrace();
+            }
+            Analisador analisador = new Analisador();
+            TabelaDeSimbolo tabela;
+            try {
+                tabela = analisador.executarAnaliseSintatica(arquivo);
+                preencheTabela(tabela);
+                view.getTaMensagem().setText("Análise Concluida!");
+            } catch (RuntimeException ex) {
+                view.getTaMensagem().setText(ex.getMessage());
+            } catch (IOException ex) {
+                view.getTaMensagem().setText("Erro ao ler arquivo");
+            } catch (Exception ex) {
+                view.getTaMensagem().setText(ex.getMessage());
             }
         });
     }

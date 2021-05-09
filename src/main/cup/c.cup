@@ -1,161 +1,388 @@
+package cup;
+
 import java_cup.runtime.*;
+import java.util.*;
 
-parser code  {:
+parser code {:
+  private List<String> erros = new ArrayList();
+
   public void report_error(String message, Object info) {
-    StringBuilder m = new StringBuilder("Error ");
+    StringBuffer m = new StringBuffer("Erro");
 
-    if (info instanceof java_cup.runtime.Symbol)
-      m.append( "("+info.toString()+")" );
+    if (info instanceof java_cup.runtime.Symbol) {
+      java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
 
-    m.append(" : "+message);
+      if (s.left >= 0) {
 
-    System.out.println(m);
+        m.append(" na linha "+(s.left+1));
+
+        if (s.right >= 0)
+
+          m.append(", coluna "+(s.right+1));
+        }
+    }
+
+    List<Integer> ids = this.expected_token_ids();
+    LinkedList<String> list = new LinkedList();
+    Iterator var3 = ids.iterator();
+
+    while(var3.hasNext()) {
+        Integer expected = (Integer)var3.next();
+        list.add(converteSimboloParaLexema(this.symbl_name_from_id(expected)));
+    }
+
+    m.append(" : " + "Erro de sintaxe! " + "Era esperado encontrar " + list);
+
+    erros.add(m.toString());
   }
 
   public void report_fatal_error(String message, Object info) {
     report_error(message, info);
-    throw new RuntimeException("Fatal Syntax Error");
+  }
+
+  public List<String> getErros() {
+    return erros;
+  }
+
+  private String converteSimboloParaLexema(String simbolo) {
+      switch(simbolo) {
+          case "AUTO":
+              return "auto";
+          case "BREAK":
+              return "break";
+          case "CHAR":
+              return "char";
+          case "CONST":
+              return "const";
+          case "DOUBLE":
+              return "double";
+          case "ELSE":
+              return "else";
+          case "ENUM":
+              return "enum";
+          case "EXTERN":
+              return "extern";
+          case "FLOAT":
+              return "float";
+          case "FOR":
+              return "for";
+          case "IF":
+              return "if";
+          case "INT":
+              return "int";
+          case "LONG":
+              return "long";
+          case "PRINTF":
+              return "printf";
+          case "RETURN":
+              return "return";
+          case "SCANF":
+              return "scanf";
+          case "SHORT":
+              return "short";
+          case "SIGNED":
+              return "signed";
+          case "STATIC":
+              return "static";
+          case "STRUCT":
+              return "struct";
+          case "UNSIGNED":
+              return "unsigned";
+          case "VOID":
+              return "void";
+          case "WHILE":
+              return "while";
+          case "DEFINE":
+              return "define";
+          case "INCLUDE":
+              return "include";
+          case "MAIOR":
+              return ">";
+          case "MENOR":
+              return "<";
+          case "IGUALIGUAL":
+              return "==";
+          case "MENORIGUAL":
+              return "<=";
+          case "IGUAL":
+              return "=";
+          case "MAIORIGUAL":
+              return ">=";
+          case "DIFERENTE":
+              return "!=";
+          case "AND":
+              return "&&";
+          case "OR":
+              return "||";
+          case "MAIS":
+              return "+";
+          case "MENOS":
+              return "-";
+          case "MULTIPLICADOR":
+              return "*";
+          case "DIVISOR":
+              return "/";
+          case "MAISIGUAL":
+              return ">=";
+          case "MENOSIGUAL":
+              return "<=";
+          case "MULTIPLICADORIGUAL":
+              return "*=";
+          case "DIVISORIGUAL":
+              return "/=";
+          case "MODIGUAL":
+              return "%=";
+          case "PARENTESE_E":
+              return "(";
+          case "PARENTESE_D":
+              return ")";
+          case "CHAVE_E":
+              return "{";
+          case "CHAVE_D":
+              return "}";
+          case "COLCHETE_E":
+              return "[";
+          case "COLCHETE_D":
+              return "]";
+          case "PONTOVIRGULA":
+              return ";";
+          case "VIRGULA":
+              return ",";
+          case "PONTO":
+              return ".";
+          case "ASPA_SIMPLES":
+              return "'";
+          case "ASPA_DUPLA":
+              return "\"";
+          case "ID":
+              return "variavel";
+          case "NUM":
+              return "número";
+          case "CRLF":
+              return "quebra de linha";
+          case "EOF":
+              return "fim do arquivo";
+          default:
+              return simbolo;
+      }
   }
 :};
 
-terminal AUTO, STATIC, EXTERN, CONST; // especificador
-terminal VOID, CHAR, FLOAT, DOUBLE, SIGNED, UNSIGNED; // tipo
-terminal SHORT, INT, LONG; // inteiro
-terminal IF, ELSE; // condicao
-terminal RETURN, PRINTF, SCANF, BREAK; // instrucoes
-terminal STRUCT, ENUM; // estrutura
-terminal MAIOR, MENOR, IGUALIGUAL, MENORIGUAL, MAIORIGUAL, DIFERENTE; // comparador
-terminal IGUAL, MULTIPLICADORIGUAL, DIVISORIGUAL, MODIGUAL, MAISIGUAL, MENOSIGUAL; //atribuicao
-terminal MAIS, MENOS, MULTIPLICADOR, DIVISOR; // operadores
-terminal AND; // expressão &&
-terminal OR; // expressão ||
-terminal PARENTESE_E, PARENTESE_D, COLCHETE_E, COLCHETE_D, CHAVE_E, CHAVE_D, PONTOVIRGULA, VIRGULA, ASPA_SIMPLES, ASPA_DUPLA; //pontuacao
-terminal PONTO; // ponto
-terminal FOR, WHILE; // repeticao
+
+terminal MAIS, MENOS, MULTIPLICADOR, DIVISOR;
+terminal AND, OR;
+terminal IGUALIGUAL, DIFERENTE, MENOR, MAIOR, MAIORIGUAL, MENORIGUAL;
+terminal IGUAL, MULTIPLICADORIGUAL, DIVISORIGUAL, MODIGUAL, MAISIGUAL, MENOSIGUAL; /* atribuicao */
+terminal PONTOVIRGULA, VIRGULA;
+terminal ASPA_SIMPLES, ASPA_DUPLA, PONTO;
+
+terminal AUTO, STATIC, EXTERN, CONST; /* especificadores */
+terminal VOID, CHAR, FLOAT, DOUBLE, SIGNED, UNSIGNED, SHORT, INT, LONG, ENUM, STRUCT; /* tipos */
+terminal IF, ELSE;
+terminal FOR, WHILE, BREAK;
+terminal RETURN;
+terminal PRINTF, SCANF;
+terminal PARENTESE_E, PARENTESE_D, COLCHETE_E, COLCHETE_D, CHAVE_E, CHAVE_D;
+
+terminal INCLUDE;
 terminal DEFINE;
 
+terminal CRLF;
+
+terminal ID;
 terminal NUM;
 terminal LITERAL;
-terminal CRLF;
-terminal ID;
 
-non terminal programa, especificador, tipo, inteiro, programa2, listaID, listaIDTail;
-non terminal listaParametros, listaParamRestante, declaracaoParam, declaracaoParam2;
-non terminal declParamRestante, bloco, conjuntoInst, instrucoes, instrucoesIf, expressao;
-non terminal atribuicao, operadorAtrib, expr, exprList, exprListTail, exprOr, exprAnd;
-non terminal exprAnd2, exprEqual, exprEqual2, exprRelational, exprRelational2;
-non terminal exprPlus, exprPlus2, exprMult, exprMult2, exprUnary, exprParenthesis;
-non terminal primary, primaryID;
 
-non terminal goal;
+non terminal     programa;
+non terminal 	 declaracaoVariavel;
+non terminal     tipo;
+non terminal 	 declaracaoFuncao;
+non terminal     parametros;
+non terminal 	 listaParametros;
+non terminal     declaracaoParametro;
+non terminal 	 bloco;
+non terminal     listaDeclaracao;
+non terminal 	 listaInstrucao;
+non terminal     instrucao;
+non terminal     expr;
+non terminal 	 Object	 primario;
+non terminal     chamadaFuncao;
+non terminal     listaParametroChamadaFuncao;
+non terminal 	 posicaoVariavel;
+non terminal 	 id;
+non terminal     especificador;
+non terminal     inteiro;
+non terminal     operadorAtribuicao;
+non terminal     defines;
+non terminal     especificadortipo;
+non terminal     forInicializacao;
+non terminal     forAtualizacao;
+non terminal     includes;
+non terminal     listaId;
+non terminal     declaracaoStruct;
+non terminal     declaracaoEnum;
+non terminal     listaIdDeclaracaoEnum;
 
-start with goal;
+precedence left MULTIPLICADOR, DIVISOR;
+precedence left MAIS,MENOS;
+precedence left MENOR,MENORIGUAL,MAIOR,MAIORIGUAL,IGUALIGUAL,DIFERENTE;
+precedence left AND;
+precedence left OR;
 
-goal ::= VOID
-        ;
+start with includes;
 
-programa ::= especificador tipo ID programa2
-            | DEFINE ID NUM CRLF programa
-            |
+includes ::= INCLUDE LITERAL includes
+            | defines
             ;
 
-especificador ::= AUTO | STATIC | EXTERN | CONST | ;
+defines ::= DEFINE ID NUM defines
+        | programa
+        ;
 
-tipo ::= VOID | CHAR | FLOAT | DOUBLE | SIGNED inteiro | UNSIGNED inteiro | inteiro;
+programa ::= programa declaracaoVariavel
+		| programa declaracaoFuncao
+		| programa declaracaoStruct
+		| programa declaracaoEnum
+		|
+		;
 
-inteiro ::= SHORT | INT | LONG;
+declaracaoStruct ::= STRUCT id CHAVE_E listaDeclaracao CHAVE_D PONTOVIRGULA;
 
-programa2 ::= PONTOVIRGULA programa
-            | COLCHETE_E NUM COLCHETE_D PONTOVIRGULA programa
-            | PARENTESE_E listaParametros PARENTESE_D bloco programa
-            | VIRGULA listaID programa;
+declaracaoEnum ::= ENUM id CHAVE_E listaIdDeclaracaoEnum CHAVE_D PONTOVIRGULA;
 
-listaID ::= ID declaracaoParam2 listaIDTail;
+listaIdDeclaracaoEnum ::= id
+                    | id IGUAL INT
+                    | id VIRGULA listaIdDeclaracaoEnum
+                    | id IGUAL INT VIRGULA listaIdDeclaracaoEnum
+                    ;
 
-listaIDTail ::= PONTOVIRGULA | VIRGULA listaID;
+declaracaoVariavel ::= especificadortipo listaId PONTOVIRGULA
+		| especificadortipo listaId operadorAtribuicao expr PONTOVIRGULA
+		| especificadortipo id COLCHETE_E NUM COLCHETE_D PONTOVIRGULA
+		| STRUCT id id PONTOVIRGULA
+		| ENUM id id PONTOVIRGULA
+		;
 
-listaParametros ::= listaParamRestante | ;
+listaId ::= id
+        | id VIRGULA listaId
+        ;
 
-listaParamRestante ::= declaracaoParam declParamRestante;
+especificador ::= AUTO
+                | STATIC
+                | EXTERN
+                | CONST
+                ;
 
-declaracaoParam ::= tipo ID declaracaoParam2;
+tipo ::=  VOID
+		| CHAR
+		| FLOAT
+		| DOUBLE
+		| SIGNED inteiro
+		| UNSIGNED inteiro
+		| inteiro
+		;
 
-declaracaoParam2 ::= COLCHETE_E NUM COLCHETE_D | ;
+inteiro ::= SHORT
+        | INT
+        | LONG
+        ;
 
-declParamRestante ::= VIRGULA listaParamRestante | ;
+especificadortipo::= especificador tipo
+    | tipo
+    ;
 
-bloco ::= CHAVE_E conjuntoInst CHAVE_D | PONTOVIRGULA conjuntoInst;
+operadorAtribuicao ::= IGUAL
+                    | MULTIPLICADORIGUAL
+                    | DIVISORIGUAL
+                    | MODIGUAL
+                    | MAISIGUAL
+                    | MENOSIGUAL
+                    ;
 
-conjuntoInst ::= programa conjuntoInst | instrucoes conjuntoInst | ;
+declaracaoFuncao ::= especificadortipo id parametros bloco
+		            ;
 
-instrucoes ::= ID expressao PONTOVIRGULA
-            | RETURN expr PONTOVIRGULA
+parametros ::= PARENTESE_E PARENTESE_D
+			| PARENTESE_E listaParametros PARENTESE_D
+			;
+
+listaParametros ::= declaracaoParametro
+			| listaParametros VIRGULA declaracaoParametro
+			;
+
+declaracaoParametro ::= tipo id
+			;
+
+bloco ::= CHAVE_E listaDeclaracao listaInstrucao CHAVE_D
+		;
+
+listaDeclaracao ::= listaDeclaracao declaracaoVariavel
+		        |
+		        ;
+
+listaInstrucao ::= listaInstrucao instrucao
+		        |
+		        ;
+
+instrucao ::= SCANF PARENTESE_E id PARENTESE_D PONTOVIRGULA
             | PRINTF PARENTESE_E expr PARENTESE_D PONTOVIRGULA
-            | SCANF PARENTESE_E ID PARENTESE_D PONTOVIRGULA
+            | posicaoVariavel operadorAtribuicao expr PONTOVIRGULA
+            | id PONTOVIRGULA
+            | id operadorAtribuicao expr PONTOVIRGULA
+            | IF PARENTESE_E expr PARENTESE_D bloco
+            | IF PARENTESE_E expr PARENTESE_D bloco ELSE bloco
+            | FOR PARENTESE_E forInicializacao PONTOVIRGULA expr PONTOVIRGULA forAtualizacao PARENTESE_D bloco
+            | WHILE PARENTESE_E expr PARENTESE_D bloco
             | BREAK PONTOVIRGULA
-            | IF PARENTESE_E expr PARENTESE_D instrucoes instrucoesIf;
+            | RETURN expr PONTOVIRGULA
+            | RETURN PONTOVIRGULA
+            | chamadaFuncao PONTOVIRGULA
+            ;
 
-instrucoesIf ::= ELSE instrucoes | ;
+forInicializacao ::= tipo id operadorAtribuicao expr
+                    |
+                    ;
 
-expressao ::= atribuicao
-            | COLCHETE_E expr COLCHETE_D atribuicao
-            | PARENTESE_E exprList PARENTESE_D
-            | ;
+forAtualizacao ::= id operadorAtribuicao expr
+                |
+                ;
 
-atribuicao ::= operadorAtrib expr;
+expr ::= expr MAIS expr
+	| expr MENOS expr
+	| expr MULTIPLICADOR expr
+	| expr DIVISOR expr
+	| expr AND expr
+	| expr OR expr
+	| expr IGUALIGUAL expr
+	| expr DIFERENTE expr
+	| expr MENOR expr
+	| expr MAIOR expr
+	| expr MENORIGUAL expr
+	| expr MAIORIGUAL expr
+    | MAIS primario
+	| MENOS primario
+	| primario
+	;
 
-operadorAtrib ::= IGUAL | MULTIPLICADORIGUAL | DIVISORIGUAL | MODIGUAL | MAISIGUAL | MENOSIGUAL;
+primario ::= NUM
+        | LITERAL
+        | PARENTESE_E expr PARENTESE_D
+        | chamadaFuncao
+        | posicaoVariavel
+        | id
+        ;
 
-expr ::= exprAnd exprOr;
+chamadaFuncao ::= id PARENTESE_E PARENTESE_D
+			| id PARENTESE_E listaParametroChamadaFuncao PARENTESE_D
+			;
 
-exprList ::= expr exprListTail | ;
+listaParametroChamadaFuncao ::= expr
+			| listaParametroChamadaFuncao VIRGULA expr
+			;
 
-exprListTail ::= VIRGULA exprList | ;
+posicaoVariavel ::= id COLCHETE_E expr COLCHETE_D
+				;
 
-exprOr ::= OR exprAnd exprOr | ;
-
-exprAnd ::= exprEqual exprAnd2;
-
-exprAnd2 ::= AND exprEqual exprAnd2 | ;
-
-exprEqual ::= exprRelational exprEqual2;
-
-exprEqual2 ::= IGUALIGUAL exprRelational exprEqual2 | DIFERENTE exprRelational exprEqual2 | ;
-
-exprRelational ::= exprPlus exprRelational2;
-
-exprRelational2 ::= MENOR exprPlus exprRelational2
-                | MENORIGUAL exprPlus exprRelational2
-                | MAIOR exprPlus exprRelational2
-                | MAIORIGUAL exprPlus exprRelational2
-                | ;
-
-exprPlus ::= exprMult exprPlus2;
-
-exprPlus2 ::= MAIS exprMult exprPlus2
-            | MENOS exprMult exprPlus2
-            | ;
-
-exprMult ::= exprUnary exprMult2;
-
-exprMult2 ::= MULTIPLICADOR exprUnary exprMult2
-            | DIVISOR exprUnary exprMult2
-            | ;
-
-exprUnary ::= MAIS exprParenthesis
-            | MENOS exprParenthesis
-            | exprParenthesis;
-
-exprParenthesis ::= PARENTESE_E expr PARENTESE_D | primary;
-
-primary ::= ID primaryID | NUM | LITERAL;
-
-primaryID ::= COLCHETE_E primary COLCHETE_D | PARENTESE_E exprList PARENTESE_D | ;
-
-// NUM declarado no flex
-
-// ID declarado no flex
-
-// LITERAL declarado no flex
-
-// CRLF declarado no flex
+id ::= ID
+	;

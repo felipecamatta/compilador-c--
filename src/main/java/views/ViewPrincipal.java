@@ -1,6 +1,7 @@
 package views;
 
 import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -121,7 +122,7 @@ public class ViewPrincipal extends javax.swing.JFrame {
         return btnSelecionar;
     }
 
-    public JTextArea getTaCodigo() {
+    public JTextArea getTaCodigo() {;;
         return taCodigo;
     }
 

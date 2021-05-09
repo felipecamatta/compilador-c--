@@ -24,6 +24,11 @@
             <artifactId>jflex</artifactId>
             <version>1.8.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>3.1.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -53,7 +58,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <generatedSourcesDirectory>src/main/java/cup</generatedSourcesDirectory>
+                            <generatedSourcesDirectory>src/main/java</generatedSourcesDirectory>
                             <symbolInterface>true</symbolInterface>
                         </configuration>
                     </execution>
